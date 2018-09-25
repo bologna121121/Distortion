@@ -18,36 +18,36 @@ HardClippingAudioProcessorEditor::HardClippingAudioProcessorEditor (HardClipping
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (300, 300);
+	setResizable(true, true);
+	AudioProcessorEditor::setResizeLimits(100, 100, 1800, 1000);
 
-	gainSlider.setSliderStyle(Slider::LinearBarVertical);
-	gainSlider.setRange(1.0, 100.0, 1.0);
-	gainSlider.setTextBoxStyle(Slider::NoTextBox, false, 90, 0);
-	gainSlider.setPopupDisplayEnabled(true, false, this);
-	//gainSlider.setTextValueSuffix(" Gain");
-	gainSlider.setValue(1.0);
+	for (int i = 0; i < sliderCount; i++)
+	{
+		sliders[i].setSliderStyle(Slider::LinearBarVertical);
+		sliders[i].setTextBoxStyle(Slider::NoTextBox, false, 90, 0);
+		sliders[i].setPopupDisplayEnabled(true, false, this);
+		addAndMakeVisible(&sliders[i]);
+		sliders[i].addListener(this);
 
-	addAndMakeVisible(&gainSlider);
-
-	volumeSlider.setSliderStyle(Slider::LinearBarVertical);
-	volumeSlider.setRange(0.0, 1.0, 0.01);
-	volumeSlider.setTextBoxStyle(Slider::NoTextBox, false, 90, 0);
-	volumeSlider.setPopupDisplayEnabled(true, false, this);
-	//volumeSlider.setTextValueSuffix(" Volume");
-	volumeSlider.setValue(0.1);
-
-	addAndMakeVisible(&volumeSlider);
-
-	gateSlider.setSliderStyle(Slider::LinearBarVertical);
-	gateSlider.setRange(0.0, 0.001, 0.00001);
-	gateSlider.setTextBoxStyle(Slider::NoTextBox, false, 90, 0);
-	gateSlider.setPopupDisplayEnabled(true, false, this);
-	gateSlider.setValue(0.0);
-
-	addAndMakeVisible(&gateSlider);
-
-	gainSlider.addListener(this);
-	volumeSlider.addListener(this);
-	gateSlider.addListener(this);
+		switch (i)
+		{
+		case gainSlider:
+			sliders[i].setRange(1.0, 100.0, 1.0);
+			sliders[i].setValue(1.0);
+			sliderLabels[i] = "Gain";
+			break;
+		case volumeSlider:
+			sliders[i].setRange(0.0, 1.0, 0.01);
+			sliders[i].setValue(0.0001);
+			sliderLabels[i] = "Volume";
+			break;
+		case gateSlider:
+			sliders[gateSlider].setRange(0.0, 0.001, 0.00001);
+			sliders[gateSlider].setValue(0.0);
+			sliderLabels[i] = "Gate";
+			break;
+		}
+	}
 
 	addAndMakeVisible(distortionList);
 	distortionList.addItem("Hard Clipping", p.hardClipping);
@@ -69,20 +69,28 @@ void HardClippingAudioProcessorEditor::paint (Graphics& g)
 
     g.setColour (Colours::white);
     g.setFont (15.0f);
-	//g.drawFittedText("Distortion Plugin", 0, 0, getWidth(), 30, Justification::centred, 1);
-	g.drawFittedText("Gain", (int)((getWidth() - 60.0) / 4.0 - 15.0), getHeight() - 30, 50, 30, Justification::centred, 1);
-	g.drawFittedText("Volume", (int)(getWidth() / 2.0 - 25.0), getHeight() - 30, 50, 30, Justification::centred, 1);
-	g.drawFittedText("Gate", (int)(3.0 * (getWidth() - 60.0) / 4.0 + 25.0), getHeight() - 30, 50, 30, Justification::centred, 1);
+
+	for (int i = 0; i < sliderCount; i++)
+	{
+		g.drawFittedText(sliderLabels[i], (int)(((i + 1) * gapWidth + (i + 0.5) * sliderWidth - (gapWidth + sliderWidth) / 2 + sliderAreaCornerX) * getWidth()),
+			(int)((sliderHeight + sliderVerticalMargin + sliderAreaCornerY) * getHeight()),
+			(int)(sliderLabelWidth * getWidth()), (int)(sliderLabelHeight * getHeight()),
+			Justification::centred, 1);
+	}
 }
 
 void HardClippingAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
-	gainSlider.setBounds((int)((getWidth() - 60.0) / 4.0), 60, 20, getHeight() - 90);
-	volumeSlider.setBounds((int)(2.0 * (getWidth() - 60.0) / 4.0 + 20.0), 60, 20, getHeight() - 90);
-	gateSlider.setBounds((int)(3.0 * (getWidth() - 60.0) / 4.0 + 40.0), 60, 20, getHeight() - 90);
-	distortionList.setBounds(getWidth() / 2 - 100, 15, 200, 30);
+
+	for (int i = 0; i < sliderCount; i++)
+	{
+		sliders[i].setBounds((int)(((i + 1) * gapWidth + i * sliderWidth + sliderAreaCornerX) * getWidth()), (int)((sliderVerticalMargin + sliderAreaCornerY) * getHeight()),
+			(int)(sliderWidth * getWidth()), (int)(sliderHeight * getHeight()));
+	}
+
+	distortionList.setBounds((int)(getWidth() / 6.0), 0.05 * getHeight(), (int)(2 * getWidth() / 3), (int)(0.1 * getHeight()));
 }
 
 void HardClippingAudioProcessorEditor::distortionChanged()
@@ -92,7 +100,7 @@ void HardClippingAudioProcessorEditor::distortionChanged()
 
 void HardClippingAudioProcessorEditor::sliderValueChanged(Slider * slider)
 {
-	processor.gainLevel = gainSlider.getValue();
-	processor.volumeLevel = volumeSlider.getValue();
-	processor.gateThreshold = gateSlider.getValue();
+	processor.gainLevel = sliders[gainSlider].getValue();
+	processor.volumeLevel = sliders[volumeSlider].getValue();
+	processor.gateThreshold = sliders[gateSlider].getValue();
 }

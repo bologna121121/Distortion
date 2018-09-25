@@ -32,10 +32,29 @@ private:
     // access the processor object that created it.
     HardClippingAudioProcessor& processor;
 
-	Slider gainSlider;
-	Slider volumeSlider;
-	Slider gateSlider;
 	ComboBox distortionList;
+
+	enum sliderTypes
+	{
+		gainSlider = 0,
+		volumeSlider = 1,
+		gateSlider = 2
+	};
+
+	// Values below are expressed as fractions of the current window width and height
+	int sliderCount = 3;
+	double sliderAreaCornerX = 0;
+	double sliderAreaCornerY = 0.2;
+	double sliderAreaHeight = 1 - sliderAreaCornerY;
+	double sliderAreaWidth = 1.0;
+	double sliderVerticalMargin = 0.1 * sliderAreaHeight;
+	double sliderLabelHeight = 0.1 * sliderAreaHeight;
+	double sliderWidth = 0.066667;
+	double sliderHeight = sliderAreaHeight - 2 * sliderVerticalMargin - sliderLabelHeight;
+	double gapWidth = (sliderAreaWidth - sliderCount * sliderWidth) / (sliderCount + 1.0);
+	double sliderLabelWidth = gapWidth + sliderWidth;
+	std::vector<Slider> sliders{ 3 };
+	std::vector<String> sliderLabels{ 3 };
 
 	void distortionChanged();
 	void sliderValueChanged(Slider* slider) override;
