@@ -58,10 +58,6 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 	float gainLevel = 1.0;
-	float volumeLevel = 0.1;
-	float gateThreshold = 0.0;
-	float movingAverageCH0 = 0.0;
-	float movingAverageCH1 = 0.0;
 
 	enum DistortionType
 	{

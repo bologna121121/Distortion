@@ -181,7 +181,7 @@ void HardClippingAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiB
 					break;
 				}
 			}
-			bufferToFill[sample] = current * volumeLevel;
+			bufferToFill[sample] = current;
 		}
     }
 }

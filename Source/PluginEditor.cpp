@@ -36,16 +36,6 @@ HardClippingAudioProcessorEditor::HardClippingAudioProcessorEditor (HardClipping
 			sliders[i].setValue(1.0);
 			sliderLabels[i] = "Gain";
 			break;
-		case volumeSlider:
-			sliders[i].setRange(0.0, 1.0, 0.01);
-			sliders[i].setValue(0.0001);
-			sliderLabels[i] = "Volume";
-			break;
-		case gateSlider:
-			sliders[gateSlider].setRange(0.0, 0.001, 0.00001);
-			sliders[gateSlider].setValue(0.0);
-			sliderLabels[i] = "Gate";
-			break;
 		}
 	}
 
@@ -101,6 +91,4 @@ void HardClippingAudioProcessorEditor::distortionChanged()
 void HardClippingAudioProcessorEditor::sliderValueChanged(Slider * slider)
 {
 	processor.gainLevel = sliders[gainSlider].getValue();
-	processor.volumeLevel = sliders[volumeSlider].getValue();
-	processor.gateThreshold = sliders[gateSlider].getValue();
 }

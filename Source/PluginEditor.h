@@ -34,15 +34,13 @@ private:
 
 	ComboBox distortionList;
 
-	enum sliderTypes
+	enum
 	{
-		gainSlider = 0,
-		volumeSlider = 1,
-		gateSlider = 2
+		gainSlider = 0
 	};
 
 	// Values below are expressed as fractions of the current window width and height
-	int sliderCount = 3;
+	int sliderCount = 1;
 	double sliderAreaCornerX = 0;
 	double sliderAreaCornerY = 0.2;
 	double sliderAreaHeight = 1 - sliderAreaCornerY;
@@ -53,8 +51,8 @@ private:
 	double sliderHeight = sliderAreaHeight - 2 * sliderVerticalMargin - sliderLabelHeight;
 	double gapWidth = (sliderAreaWidth - sliderCount * sliderWidth) / (sliderCount + 1.0);
 	double sliderLabelWidth = gapWidth + sliderWidth;
-	std::vector<Slider> sliders{ 3 };
-	std::vector<String> sliderLabels{ 3 };
+	std::vector<Slider> sliders{ sliderCount};
+	std::vector<String> sliderLabels{ sliderCount };
 
 	void distortionChanged();
 	void sliderValueChanged(Slider* slider) override;
